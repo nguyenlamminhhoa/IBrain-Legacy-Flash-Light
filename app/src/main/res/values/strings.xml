@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Flashlight Legacy</string>
+    <string name="turn_on">Turn ON</string>
+    <string name="turn_off">Turn OFF</string>
+</resources>
