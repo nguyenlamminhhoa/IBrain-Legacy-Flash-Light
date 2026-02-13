@@ -1,0 +1,37 @@
+*.iml
+.gradle
+/local.properties
+.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Gradle
+.gradle/
+build/
+
+# Kotlin
+*.versions.toml.bin
+
+# User-specific stuff
+google-services.json
+
+# Log files
+*.log
+
+# Android App Bundle packaging
+*.aab
+
+# Keystore files
+*.jks
+*.keystore
+*.p12
+
+# Map optimization files
+*.txt
+
+# Project-wide Gradle settings
+/gradle.properties
