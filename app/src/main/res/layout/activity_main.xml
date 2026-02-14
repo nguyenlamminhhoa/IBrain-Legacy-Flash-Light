@@ -8,10 +8,11 @@
 
     <ToggleButton
         android:id="@+id/toggleFlashlight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textOff="@string/turn_on"
-        android:textOn="@string/turn_off"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@drawable/flashlight_selector"
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
