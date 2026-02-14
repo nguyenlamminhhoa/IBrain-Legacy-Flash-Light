@@ -35,6 +35,3 @@ google-services.json
 # Ngoại lệ cho file License
 !LICENSE.txt
 !license.txt
-
-# Project-wide Gradle settings
-/gradle.properties
