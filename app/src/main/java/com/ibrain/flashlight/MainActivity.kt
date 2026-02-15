@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity() {
                 isFlashOn = true
             } catch (e: Exception) {
                 e.printStackTrace()
+                Toast.makeText(this, "Camera is busy or in use", Toast.LENGTH_SHORT).show()
             }
         } else {
-            // Legacy Camera API for Android < 6.0
             try {
                 if (camera == null) {
                     camera = Camera.open()
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                 isFlashOn = true
             } catch (e: Exception) {
                 e.printStackTrace()
+                Toast.makeText(this, "Legacy Camera Error", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -75,25 +76,36 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         } else {
-            // Legacy Camera API
             try {
-                val params = camera?.parameters
-                params?.flashMode = Camera.Parameters.FLASH_MODE_OFF
-                camera?.parameters = params
-                camera?.stopPreview()
-                camera?.release()
-                camera = null
-                isFlashOn = false
+                camera?.let {
+                    val params = it.parameters
+                    params?.flashMode = Camera.Parameters.FLASH_MODE_OFF
+                    it.parameters = params
+                    it.stopPreview()
+                    it.release()
+                    camera = null
+                    isFlashOn = false
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
+        // Giải phóng camera khi ứng dụng không còn ở trên màn hình
         if (isFlashOn) {
-            turnOffFlash()
+            // Tùy chọn: bạn có thể để đèn sáng tiếp hoặc tắt đi
+            // turnOffFlash() 
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (camera != null) {
+            camera?.release()
+            camera = null
         }
     }
 }
