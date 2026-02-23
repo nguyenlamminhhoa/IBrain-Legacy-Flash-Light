@@ -1,5 +1,6 @@
 package com.ibrain.flashlight
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Camera
@@ -7,34 +8,61 @@ import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import android.widget.ToggleButton
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.ibrain.flashlight.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private var camera: Camera? = null
     private var isFlashOn = false
     private var hasFlash = false
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            setupFlashlight()
+        } else {
+            Toast.makeText(this, getString(R.string.permission_required), Toast.LENGTH_LONG).show()
+            binding.toggleFlashlight.isChecked = false
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         hasFlash = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
 
         if (!hasFlash) {
-            Toast.makeText(this, "Device has no flash!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.no_flash_error), Toast.LENGTH_LONG).show()
+            binding.toggleFlashlight.isEnabled = false
             return
         }
 
-        val toggleButton = findViewById<ToggleButton>(R.id.toggleFlashlight)
-        toggleButton.setOnCheckedChangeListener { _, isChecked ->
+        binding.toggleFlashlight.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                turnOnFlash()
+                checkPermissionAndTurnOn()
             } else {
                 turnOffFlash()
             }
         }
+    }
+
+    private fun checkPermissionAndTurnOn() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            setupFlashlight()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun setupFlashlight() {
+        turnOnFlash()
     }
 
     private fun turnOnFlash() {
@@ -46,7 +74,8 @@ class MainActivity : AppCompatActivity() {
                 isFlashOn = true
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(this, "Camera is busy or in use", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.camera_busy_error), Toast.LENGTH_SHORT).show()
+                binding.toggleFlashlight.isChecked = false
             }
         } else {
             try {
@@ -60,7 +89,8 @@ class MainActivity : AppCompatActivity() {
                 isFlashOn = true
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(this, "Legacy Camera Error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.legacy_camera_error), Toast.LENGTH_SHORT).show()
+                binding.toggleFlashlight.isChecked = false
             }
         }
     }
@@ -94,10 +124,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        // Giải phóng camera khi ứng dụng không còn ở trên màn hình
+        // Turn off flash when the app goes to the background to save battery
         if (isFlashOn) {
-            // Tùy chọn: bạn có thể để đèn sáng tiếp hoặc tắt đi
-            // turnOffFlash() 
+            binding.toggleFlashlight.isChecked = false
+            turnOffFlash()
         }
     }
 
