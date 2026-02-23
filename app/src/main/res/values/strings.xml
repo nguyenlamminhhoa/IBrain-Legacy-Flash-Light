@@ -2,4 +2,8 @@
     <string name="app_name">Flashlight Legacy</string>
     <string name="turn_on">Turn ON</string>
     <string name="turn_off">Turn OFF</string>
+    <string name="no_flash_error">Device has no flash!</string>
+    <string name="camera_busy_error">Camera is busy or in use</string>
+    <string name="legacy_camera_error">Legacy Camera Error</string>
+    <string name="permission_required">Camera permission is required to use flashlight</string>
 </resources>
