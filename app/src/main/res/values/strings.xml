@@ -6,4 +6,5 @@
     <string name="camera_busy_error">Camera is busy or in use</string>
     <string name="legacy_camera_error">Legacy Camera Error</string>
     <string name="permission_required">Camera permission is required to use flashlight</string>
+    <string name="help_description">Help information</string>
 </resources>

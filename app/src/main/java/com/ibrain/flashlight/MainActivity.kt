@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.ibrain.flashlight.databinding.ActivityMainBinding
@@ -51,6 +52,18 @@ class MainActivity : AppCompatActivity() {
                 turnOffFlash()
             }
         }
+
+        binding.btnHelp.setOnClickListener {
+            showHelpDialog()
+        }
+    }
+
+    private fun showHelpDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.app_name)
+            .setMessage("Đây là ứng dụng đèn pin đơn giản.\nNhấn nút giữa để bật/tắt đèn.")
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun checkPermissionAndTurnOn() {
