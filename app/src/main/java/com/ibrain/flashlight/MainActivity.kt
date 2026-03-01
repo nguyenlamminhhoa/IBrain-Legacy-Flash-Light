@@ -24,11 +24,9 @@ class MainActivity : AppCompatActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            setupFlashlight()
-        } else {
+        if (!isGranted) {
             Toast.makeText(this, getString(R.string.permission_required), Toast.LENGTH_LONG).show()
-            binding.toggleFlashlight.isChecked = false
+            binding.toggleFlashlight.isEnabled = false
         }
     }
 
@@ -45,9 +43,17 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        // check permission after turn on app
+        checkCameraPermission()
+
         binding.toggleFlashlight.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                checkPermissionAndTurnOn()
+                if (hasPermission()) {
+                    turnOnFlash()
+                } else {
+                    binding.toggleFlashlight.isChecked = false
+                    checkCameraPermission()
+                }
             } else {
                 turnOffFlash()
             }
@@ -58,24 +64,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkCameraPermission() {
+        if (!hasPermission()) {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun hasPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
     private fun showHelpDialog() {
         AlertDialog.Builder(this)
             .setTitle(R.string.app_name)
             .setMessage("Đây là ứng dụng đèn pin đơn giản.\nNhấn nút giữa để bật/tắt đèn.")
             .setPositiveButton("OK", null)
             .show()
-    }
-
-    private fun checkPermissionAndTurnOn() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            setupFlashlight()
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
-    }
-
-    private fun setupFlashlight() {
-        turnOnFlash()
     }
 
     private fun turnOnFlash() {
@@ -137,7 +141,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        // Turn off flash when the app goes to the background to save battery
         if (isFlashOn) {
             binding.toggleFlashlight.isChecked = false
             turnOffFlash()
