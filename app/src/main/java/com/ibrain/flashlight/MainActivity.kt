@@ -84,15 +84,15 @@ class MainActivity : AppCompatActivity() {
     private fun showHelpDialog() {
         AlertDialog.Builder(this)
             .setTitle(R.string.app_name)
-            .setMessage("Đây là ứng dụng đèn pin đơn giản.\nNhấn nút giữa để bật/tắt đèn.")
+            .setMessage(R.string.help_message)
             .setPositiveButton("OK", null)
             .show()
     }
 
     private fun showPermissionDeniedDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Cần quyền truy cập")
-            .setMessage("Ứng dụng cần quyền Camera để sử dụng đèn pin. Vui lòng cấp quyền trong cài đặt ứng dụng.")
+            .setTitle(R.string.permission_denied_title)
+            .setMessage(R.string.permission_denied_message)
             .setPositiveButton("OK", null)
             .show()
     }
