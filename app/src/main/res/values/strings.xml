@@ -7,4 +7,7 @@
     <string name="legacy_camera_error">Legacy Camera Error</string>
     <string name="permission_required">Camera permission is required to use flashlight</string>
     <string name="help_description">Help information</string>
+    <string name="help_message">This is a simple flashlight app. Press the center button to turn the light on/off.</string>
+    <string name="permission_denied_title">Permission Required</string>
+    <string name="permission_denied_message">The app needs Camera permission to use the flashlight. Please grant permission in the app settings.</string>
 </resources>
