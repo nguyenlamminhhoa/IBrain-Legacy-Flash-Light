@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.ibrain.flashlight.databinding.ActivityMainBinding
 
@@ -24,9 +25,15 @@ class MainActivity : AppCompatActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (!isGranted) {
+        if (isGranted) {
+            // Permission granted, do nothing, just let user toggle
+        } else {
             Toast.makeText(this, getString(R.string.permission_required), Toast.LENGTH_LONG).show()
-            binding.toggleFlashlight.isEnabled = false
+            // If user permanently denied, we might want to guide them to settings
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                showPermissionDeniedDialog()
+            }
+            binding.toggleFlashlight.isChecked = false
         }
     }
 
@@ -43,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // check permission after turn on app
+        // Check and request permission immediately on start
         checkCameraPermission()
 
         binding.toggleFlashlight.setOnCheckedChangeListener { _, isChecked ->
@@ -78,6 +85,14 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(R.string.app_name)
             .setMessage("Đây là ứng dụng đèn pin đơn giản.\nNhấn nút giữa để bật/tắt đèn.")
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
+    private fun showPermissionDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Cần quyền truy cập")
+            .setMessage("Ứng dụng cần quyền Camera để sử dụng đèn pin. Vui lòng cấp quyền trong cài đặt ứng dụng.")
             .setPositiveButton("OK", null)
             .show()
     }
@@ -136,6 +151,14 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Re-check permission if user coming back from settings
+        if (hasPermission()) {
+            binding.toggleFlashlight.isEnabled = true
         }
     }
 
