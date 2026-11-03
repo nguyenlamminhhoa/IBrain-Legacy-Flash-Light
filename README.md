@@ -1,4 +1,4 @@
-# IBrain Legacy Flash Light
+# IBrain - Legacy Flash Light
 
 A lightweight flashlight application designed to support old Android devices with reliable camera flash functionality.
 
@@ -56,7 +56,7 @@ The application requires the following permissions:
 This project is licensed under the GNU Affero General Public License v3.0 - see the LICENSE file for details.
 
 ## Author
-nguyenlamminhhoa
+Nguyễn Lâm Minh Hòa
 
 ## Contributing
 Contributions are welcome! Feel free to fork the repository and submit pull requests.
